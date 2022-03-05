@@ -1,1 +1,1 @@
-Simple OpenCv image convolution implementation
+##Image Convolution in python using openCV
