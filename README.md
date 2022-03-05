@@ -1,1 +1,1 @@
-##Image Convolution in python using openCV
+## Image Convolution in python using openCV
