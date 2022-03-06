@@ -75,7 +75,7 @@ def convolution(filter,img):
     
 def show(convol_arr):
     print(convol_arr.shape)
-    cv2.imwrite('test.jpg', convol_arr)
+    cv2.imwrite('enemy_edge.jpg', convol_arr)
 
 if __name__ == "__main__":
     filter = []
