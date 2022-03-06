@@ -6,7 +6,7 @@ import numpy as np
 convol_list = []
 
 def open_img():
-    img_path = "test.jpg"
+    img_path = "enemy.jpg"
     load_img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     return load_img
 
