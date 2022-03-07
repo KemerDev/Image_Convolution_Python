@@ -1,14 +1,33 @@
 import cv2
-from cv2 import waitKey
 from matplotlib.pyplot import show
 import numpy as np
+from multiprocessing import Pool
 
 convol_list = []
 
 def open_img():
-    img_path = "enemy.jpg"
+    img_path = "cancer_edge.jpg"
     load_img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     return load_img
+
+def split_array(img):
+
+    out = np.array_split(img, 4)
+
+    return out
+
+def unsplit_array(new_arr):
+    convol_list = []
+    new_list = []
+
+    convol_list.append([res.get() for res in new_arr])
+
+    for i in range(0, len(convol_list)):
+        for j in range(0, len(convol_list[i])):
+            for h in range(0, len(convol_list[i][j])):
+                new_list.append(convol_list[i][j][h])
+
+    return new_list
 
 def choose_filter():
     filters = []
@@ -52,11 +71,11 @@ def choose_filter():
     filters.append(gaussianBlur_kernel)
 
     return filters
-
+    
 # pick a kernel, convolute the img and save it as test.jpg
 def convolution(filter,img):
     # final 1237, 1856
-    c_filter = filter[1]
+    c_filter = filter[4]
 
     k_size = len(c_filter)
 
@@ -74,12 +93,22 @@ def convolution(filter,img):
     return convol_arr
     
 def show(convol_arr):
-    print(convol_arr.shape)
-    cv2.imwrite('enemy_edge.jpg', convol_arr)
+    cv2.imwrite('cancer_edge.jpg', convol_arr)
 
 if __name__ == "__main__":
+    pool = Pool(processes=4)
+    new_arr = []
     filter = []
+
     load_img = open_img()
+    split_arr = split_array(load_img)
     filter = choose_filter()
-    convol_arr = convolution(filter, load_img)
-    show(convol_arr)
+
+    # give img array parts to processes
+    for i in range(0, 4):
+        new_arr.append(pool.apply_async(convolution, [filter, split_arr[i]]))
+    
+    new_list = unsplit_array(new_arr)
+
+    convol_final_arr = np.array(new_list)
+    show(convol_final_arr)
